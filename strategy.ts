@@ -50,8 +50,11 @@ const PROBE_MIN_NON_CREATOR_BOUGHT = 500_000_000n; // 0.5 SOL
 /** Pacing target: this many coins per this many slots (~6h at 0.4s/slot). */
 const PACE_TARGET_COINS = 30;
 const PACE_TARGET_SLOTS = 54000;
-/** Start probing once the bot trails its pace target by this many coins. */
-const PACE_LAG_TRIGGER = 2;
+/** Start probing once the bot trails its pace target by this many coins.
+ *  Kept wide on purpose: a probe round trip pays fees on both legs and
+ *  buys a weaker coin, so probes are insurance for a quiet stretch, not a
+ *  way to pad the coin count. */
+const PACE_LAG_TRIGGER = 6;
 /** Slippage guard on every order (bps). Wide enough that a 2-slot latency
  *  move rarely rejects the fill, tight enough to bound a bad print. */
 const SLIPPAGE_BPS = 1000;
