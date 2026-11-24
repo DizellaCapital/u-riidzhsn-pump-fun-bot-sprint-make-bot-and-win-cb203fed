@@ -148,7 +148,15 @@ export function createStrategy() {
     }
 
     // --- exits: sell held positions that hit TP / SL / clock / creator sell
+    // A sell already in flight (fill lands 2 slots after the decision) must
+    // not be sent twice: the duplicate would be rejected for
+    // insufficient_tokens once the first one fills.
+    const sellPending = new Set<string>();
+    for (const p of state.pending.values()) {
+      if (p.order.side === 'sell') sellPending.add(p.order.mint);
+    }
     for (const [mint, holding] of state.positions) {
+      if (sellPending.has(mint)) continue;
       const w = watched.get(mint);
       const curve = state.curves.get(mint);
       // Probe positions are flipped the moment the fill lands.
